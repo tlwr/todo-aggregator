@@ -12,6 +12,9 @@ type Todo interface {
 
 	URI() string
 	URL() string
+
+	Started() bool
+	Finished() bool
 }
 
 type fakeTodo struct {
@@ -19,6 +22,9 @@ type fakeTodo struct {
 
 	name   string
 	labels []string
+
+	started  bool
+	finished bool
 }
 
 func (t *fakeTodo) Name() string {
@@ -35,4 +41,12 @@ func (t *fakeTodo) URI() string {
 
 func (t *fakeTodo) URL() string {
 	return fmt.Sprintf("https://fake-todo-list.local/%s", t.id)
+}
+
+func (t *fakeTodo) Started() bool {
+	return t.started
+}
+
+func (t *fakeTodo) Finished() bool {
+	return t.finished
 }
