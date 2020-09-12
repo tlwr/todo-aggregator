@@ -66,7 +66,7 @@ func FetchPivotalTodos(projectIDs []string) ([]Todo, error) {
 			return nil, err
 		}
 
-		stories, err := client.Stories.List(projectID, "")
+		stories, err := client.Stories.List(projectID, "-estimated:-1")
 
 		if err != nil {
 			return nil, err
