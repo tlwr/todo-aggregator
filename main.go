@@ -70,6 +70,7 @@ func main() {
 	go func() {
 		server.ListenAndServe()
 	}()
+	logger.Println("server is listening")
 
 	<-ctx.Done()
 
