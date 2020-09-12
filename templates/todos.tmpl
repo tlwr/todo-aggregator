@@ -21,26 +21,32 @@
     </div>
 
     <main>
-      <h2>doing</h2>
-      {{ range $index, $todo := . }}
-      {{ if and ($todo.Started) (not $todo.Finished) }}
-        {{ template "todo" $todo }}
-      {{ end }}
-      {{ end }}
+      <details open>
+        <summary>doing</summary>
+        {{ range $index, $todo := . }}
+        {{ if and ($todo.Started) (not $todo.Finished) }}
+          {{ template "todo" $todo }}
+        {{ end }}
+        {{ end }}
+      </details>
 
-      <h2>todo</h2>
-      {{ range $index, $todo := . }}
-      {{ if and (not $todo.Started) (not $todo.Finished) }}
-        {{ template "todo" $todo }}
-      {{ end }}
-      {{ end }}
+      <details open>
+        <summary>todo</summary>
+        {{ range $index, $todo := . }}
+        {{ if and (not $todo.Started) (not $todo.Finished) }}
+          {{ template "todo" $todo }}
+        {{ end }}
+        {{ end }}
+      </details>
 
-      <h2>done</h2>
-      {{ range $index, $todo := . }}
-      {{ if $todo.Finished }}
-        {{ template "todo" $todo }}
-      {{ end }}
-      {{ end }}
+      <details>
+        <summary>done</summary>
+        {{ range $index, $todo := . }}
+        {{ if $todo.Finished }}
+          {{ template "todo" $todo }}
+        {{ end }}
+        {{ end }}
+      </details>
     </main>
   </body>
 </html>
