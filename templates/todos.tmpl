@@ -1,5 +1,5 @@
 {{ define "todo" }}
-<div>
+<div style="margin-left: 5px; padding-left: 5px; border-left: 1px solid black">
   {{ .Source }}: <a href="{{ .URL }}">{{ .Name }}</a>
 </div>
 {{ end }}
@@ -15,7 +15,7 @@
   </head>
 
 
-  <body>
+  <body style="max-width: 900px; margin: 10px auto;">
     <div class="container">
       <header><h1>todos</h1></header>
     </div>
