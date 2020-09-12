@@ -1,6 +1,6 @@
 {{ define "todo" }}
 <div>
-  <a href="{{ .URL }}">{{ .Name }}</a>
+  {{ .Source }}: <a href="{{ .URL }}">{{ .Name }}</a>
 </div>
 {{ end }}
 

@@ -25,6 +25,10 @@ func (t *pivotalTodo) Name() string {
 	return t.name
 }
 
+func (t *pivotalTodo) Source() string {
+	return "pivotal"
+}
+
 func (t *pivotalTodo) Labels() []string {
 	return t.labels
 }
