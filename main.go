@@ -37,10 +37,6 @@ func main() {
 	}
 	todos = append(todos, pivotalTodos...)
 
-	for _, todo := range todos {
-		logger.Printf("pivotal: %s %s", todo.Name(), todo.URL())
-	}
-
 	renderer := render.New(render.Options{
 		Directory: "templates",
 	})
