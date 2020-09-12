@@ -15,12 +15,12 @@
   </head>
 
 
-  <body style="max-width: 900px; margin: 10px auto;">
+  <body>
     <div class="container">
       <header><h1>todos</h1></header>
     </div>
 
-    <main>
+    <main class="container">
       <details open>
         <summary>doing</summary>
         {{ range $index, $todo := . }}
