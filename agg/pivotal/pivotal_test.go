@@ -67,5 +67,13 @@ var _ = Describe("Pivotal", func() {
 		By("Checking URLs")
 		Expect(todos[0].URL()).To(Equal("https://www.pivotaltracker.com/story/show/12345"))
 		Expect(todos[1].URL()).To(Equal("https://www.pivotaltracker.com/story/show/123456"))
+
+		By("Checking Started")
+		Expect(todos[0].Started()).To(Equal(true))
+		Expect(todos[1].Started()).To(Equal(true))
+
+		By("Checking Stopped")
+		Expect(todos[0].Finished()).To(Equal(true))
+		Expect(todos[1].Finished()).To(Equal(false))
 	})
 })

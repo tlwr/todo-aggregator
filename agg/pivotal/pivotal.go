@@ -17,6 +17,8 @@ type pivotalTodo struct {
 	labels []string
 
 	url string
+
+	currentState string
 }
 
 func (t *pivotalTodo) Name() string {
@@ -33,6 +35,24 @@ func (t *pivotalTodo) URL() string {
 
 func (t *pivotalTodo) URI() string {
 	return fmt.Sprintf("pivotal://%s/%s", t.projectID, t.storyID)
+}
+
+func (t *pivotalTodo) Started() bool {
+	switch t.currentState {
+	case "rejected", "accepted", "delivered", "finished", "started":
+		return true
+	default:
+		return false
+	}
+}
+
+func (t *pivotalTodo) Finished() bool {
+	switch t.currentState {
+	case "rejected", "accepted":
+		return true
+	default:
+		return false
+	}
 }
 
 func FetchPivotalTodos(projectIDs []string) ([]Todo, error) {
@@ -60,6 +80,8 @@ func FetchPivotalTodos(projectIDs []string) ([]Todo, error) {
 				name: story.Name,
 
 				url: story.URL,
+
+				currentState: story.State,
 			})
 		}
 	}
