@@ -1,3 +1,9 @@
+{{ define "todo" }}
+<div>
+  <a href="{{ .URL }}">{{ .Name }}</a>
+</div>
+{{ end }}
+
 <!DOCTYPE html>
 <html lang="en-GB">
   <head>
@@ -11,14 +17,29 @@
 
   <body>
     <div class="container">
-      <header>todos</header>
+      <header><h1>todos</h1></header>
     </div>
 
     <main>
+      <h2>doing</h2>
       {{ range $index, $todo := . }}
-      <div>
-        {{ $todo.Name }}
-      </div>
+      {{ if and ($todo.Started) (not $todo.Finished) }}
+        {{ template "todo" $todo }}
+      {{ end }}
+      {{ end }}
+
+      <h2>todo</h2>
+      {{ range $index, $todo := . }}
+      {{ if and (not $todo.Started) (not $todo.Finished) }}
+        {{ template "todo" $todo }}
+      {{ end }}
+      {{ end }}
+
+      <h2>done</h2>
+      {{ range $index, $todo := . }}
+      {{ if $todo.Finished }}
+        {{ template "todo" $todo }}
+      {{ end }}
       {{ end }}
     </main>
   </body>
