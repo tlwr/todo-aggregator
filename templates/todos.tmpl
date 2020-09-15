@@ -38,15 +38,6 @@
         {{ end }}
         {{ end }}
       </details>
-
-      <details>
-        <summary>done</summary>
-        {{ range $index, $todo := . }}
-        {{ if $todo.Finished }}
-          {{ template "todo" $todo }}
-        {{ end }}
-        {{ end }}
-      </details>
     </main>
   </body>
 </html>
