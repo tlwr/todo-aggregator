@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"syscall"
 	"time"
 
@@ -28,14 +30,27 @@ func main() {
 	logger.SetOutput(os.Stdout)
 	logger.SetLevel(logrus.InfoLevel)
 
+	pivotalKey := flag.String("pivotal-api-key", "", "API Key for Pivotal Tracker")
+	rawPivotalProjects := flag.String("pivotal-projects", "", "Comma separated list of Pivotal Tracker project IDs")
+
+	flag.Parse()
+
+	pivotalProjects := []string{}
+	for _, projectID := range strings.Split(*rawPivotalProjects, ",") {
+		if proj := strings.TrimSpace(projectID); proj != "" {
+			pivotalProjects = append(pivotalProjects, proj)
+		}
+	}
+
 	todos := []todo.Todo{}
 
-	pivotalTrackerProjects := []string{"1133984"}
-	pivotalTodos, err := pivotal.FetchPivotalTodos(pivotalTrackerProjects)
-	if err != nil {
-		logger.Fatal(err)
+	if len(pivotalProjects) > 0 {
+		pivotalTodos, err := pivotal.FetchPivotalTodos(*pivotalKey, pivotalProjects)
+		if err != nil {
+			logger.Fatal(err)
+		}
+		todos = append(todos, pivotalTodos...)
 	}
-	todos = append(todos, pivotalTodos...)
 
 	renderer := render.New(render.Options{
 		Directory: "templates",
