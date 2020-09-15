@@ -44,7 +44,8 @@ var _ = Describe("Pivotal", func() {
     "current_state": "accepted",
     "url": "https://www.pivotaltracker.com/story/show/12345",
     "project_id": 1234,
-    "labels": []
+    "labels": [],
+		"owner_ids": [123]
   }, {
     "kind": "story",
     "id": 123456,
@@ -53,31 +54,32 @@ var _ = Describe("Pivotal", func() {
     "current_state": "started",
     "url": "https://www.pivotaltracker.com/story/show/123456",
     "project_id": 1234,
-    "labels": []
+    "labels": [],
+		"owner_ids": [456]
   }]`,
 			),
 		)
 
 		By("Getting stories")
-		todos, err := pivotal.FetchPivotalTodos(apiKey, []string{"1234"})
+		todos, err := pivotal.FetchPivotalTodos(
+			apiKey,
+			[]string{"456"},  /* owners */
+			[]string{"1234"}, /* projects */
+		)
 		Expect(err).NotTo(HaveOccurred())
 
-		Expect(todos).To(HaveLen(2))
+		Expect(todos).To(HaveLen(1))
 
 		By("Checking names")
-		Expect(todos[0].Name()).To(Equal("a story"))
-		Expect(todos[1].Name()).To(Equal("another story"))
+		Expect(todos[0].Name()).To(Equal("another story"))
 
 		By("Checking URLs")
-		Expect(todos[0].URL()).To(Equal("https://www.pivotaltracker.com/story/show/12345"))
-		Expect(todos[1].URL()).To(Equal("https://www.pivotaltracker.com/story/show/123456"))
+		Expect(todos[0].URL()).To(Equal("https://www.pivotaltracker.com/story/show/123456"))
 
 		By("Checking Started")
 		Expect(todos[0].Started()).To(Equal(true))
-		Expect(todos[1].Started()).To(Equal(true))
 
 		By("Checking Stopped")
-		Expect(todos[0].Finished()).To(Equal(true))
-		Expect(todos[1].Finished()).To(Equal(false))
+		Expect(todos[0].Finished()).To(Equal(false))
 	})
 })

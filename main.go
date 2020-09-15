@@ -31,9 +31,17 @@ func main() {
 	logger.SetLevel(logrus.InfoLevel)
 
 	pivotalKey := flag.String("pivotal-api-key", "", "API Key for Pivotal Tracker")
+	rawPivotalOwners := flag.String("pivotal-owners", "", "Comma separated list of Pivotal Tracker owner IDs")
 	rawPivotalProjects := flag.String("pivotal-projects", "", "Comma separated list of Pivotal Tracker project IDs")
 
 	flag.Parse()
+
+	pivotalOwners := []string{}
+	for _, ownerID := range strings.Split(*rawPivotalOwners, ",") {
+		if owner := strings.TrimSpace(ownerID); owner != "" {
+			pivotalOwners = append(pivotalOwners, owner)
+		}
+	}
 
 	pivotalProjects := []string{}
 	for _, projectID := range strings.Split(*rawPivotalProjects, ",") {
@@ -45,7 +53,11 @@ func main() {
 	todos := []todo.Todo{}
 
 	if len(pivotalProjects) > 0 {
-		pivotalTodos, err := pivotal.FetchPivotalTodos(*pivotalKey, pivotalProjects)
+		pivotalTodos, err := pivotal.FetchPivotalTodos(
+			*pivotalKey,
+			pivotalOwners,
+			pivotalProjects,
+		)
 		if err != nil {
 			logger.Fatal(err)
 		}

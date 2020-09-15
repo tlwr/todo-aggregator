@@ -59,10 +59,23 @@ func (t *pivotalTodo) Finished() bool {
 	}
 }
 
-func FetchPivotalTodos(apiKey string, projectIDs []string) ([]Todo, error) {
+func FetchPivotalTodos(
+	apiKey string,
+	ownerIDs []string,
+	projectIDs []string,
+) ([]Todo, error) {
 	client := pivotal.NewClient(apiKey)
 
 	todos := []Todo{}
+
+	owners := []int{}
+	for _, oid := range ownerIDs {
+		owner, err := strconv.Atoi(oid)
+		if err != nil {
+			return nil, err
+		}
+		owners = append(owners, owner)
+	}
 
 	for _, pid := range projectIDs {
 		projectID, err := strconv.Atoi(pid)
@@ -77,6 +90,20 @@ func FetchPivotalTodos(apiKey string, projectIDs []string) ([]Todo, error) {
 		}
 
 		for _, story := range stories {
+			owned := false
+
+			for _, storyOwner := range story.OwnerIDs {
+				for _, owner := range owners {
+					if storyOwner == owner {
+						owned = true
+					}
+				}
+			}
+
+			if !owned {
+				continue
+			}
+
 			todos = append(todos, &pivotalTodo{
 				storyID:   fmt.Sprintf("%d", story.ID),
 				projectID: fmt.Sprintf("%d", projectID),
