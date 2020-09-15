@@ -3,6 +3,7 @@ module github.com/tlwr/todo-aggregator
 go 1.14
 
 require (
+	github.com/adlio/trello v1.7.0
 	github.com/jarcoal/httpmock v1.0.6
 	github.com/meatballhat/negroni-logrus v1.1.0
 	github.com/onsi/ginkgo v1.14.1

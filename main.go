@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/tlwr/todo-aggregator/agg/pivotal"
+	"github.com/tlwr/todo-aggregator/agg/trello"
 	"github.com/tlwr/todo-aggregator/todo"
 
 	nlogrus "github.com/meatballhat/negroni-logrus"
@@ -30,9 +31,13 @@ func main() {
 	logger.SetOutput(os.Stdout)
 	logger.SetLevel(logrus.InfoLevel)
 
-	pivotalKey := flag.String("pivotal-api-key", "", "API Key for Pivotal Tracker")
+	pivotalKey := flag.String("pivotal-api-key", "", "API key for Pivotal Tracker")
 	rawPivotalOwners := flag.String("pivotal-owners", "", "Comma separated list of Pivotal Tracker owner IDs")
 	rawPivotalProjects := flag.String("pivotal-projects", "", "Comma separated list of Pivotal Tracker project IDs")
+
+	trelloKey := flag.String("trello-api-key", "", "API key for Trello")
+	trelloToken := flag.String("trello-api-token", "", "API token for Trello")
+	rawTrelloUsernames := flag.String("trello-usernames", "", "Comma separated list of Trello usernames")
 
 	flag.Parse()
 
@@ -50,6 +55,13 @@ func main() {
 		}
 	}
 
+	trelloUsernames := []string{}
+	for _, username := range strings.Split(*rawTrelloUsernames, ",") {
+		if user := strings.TrimSpace(username); username != "" {
+			trelloUsernames = append(trelloUsernames, user)
+		}
+	}
+
 	todos := []todo.Todo{}
 
 	if len(pivotalProjects) > 0 {
@@ -62,6 +74,18 @@ func main() {
 			logger.Fatal(err)
 		}
 		todos = append(todos, pivotalTodos...)
+	}
+
+	if *trelloKey != "" {
+		trelloTodos, err := trello.FetchTrelloTodos(
+			*trelloKey,
+			*trelloToken,
+			trelloUsernames,
+		)
+		if err != nil {
+			logger.Fatal(err)
+		}
+		todos = append(todos, trelloTodos...)
 	}
 
 	renderer := render.New(render.Options{
