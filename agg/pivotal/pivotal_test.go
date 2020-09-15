@@ -17,6 +17,10 @@ func TestPivotal(t *testing.T) {
 }
 
 var _ = Describe("Pivotal", func() {
+	const (
+		apiKey = "test"
+	)
+
 	BeforeEach(func() {
 		httpmock.Activate()
 		httpmock.Reset()
@@ -55,7 +59,7 @@ var _ = Describe("Pivotal", func() {
 		)
 
 		By("Getting stories")
-		todos, err := pivotal.FetchPivotalTodos([]string{"1234"})
+		todos, err := pivotal.FetchPivotalTodos(apiKey, []string{"1234"})
 		Expect(err).NotTo(HaveOccurred())
 
 		Expect(todos).To(HaveLen(2))

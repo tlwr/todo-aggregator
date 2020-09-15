@@ -59,8 +59,8 @@ func (t *pivotalTodo) Finished() bool {
 	}
 }
 
-func FetchPivotalTodos(projectIDs []string) ([]Todo, error) {
-	client := pivotal.NewClient("")
+func FetchPivotalTodos(apiKey string, projectIDs []string) ([]Todo, error) {
+	client := pivotal.NewClient(apiKey)
 
 	todos := []Todo{}
 
