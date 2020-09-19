@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/tlwr/todo-aggregator/agg/github"
 	"github.com/tlwr/todo-aggregator/agg/pivotal"
 	"github.com/tlwr/todo-aggregator/agg/trello"
 	"github.com/tlwr/todo-aggregator/todo"
@@ -30,6 +31,8 @@ func main() {
 	logger.SetFormatter(&logrus.JSONFormatter{})
 	logger.SetOutput(os.Stdout)
 	logger.SetLevel(logrus.InfoLevel)
+
+	githubUsername := flag.String("github-username", "", "GitHub username")
 
 	pivotalKey := flag.String("pivotal-api-key", "", "API key for Pivotal Tracker")
 	rawPivotalOwners := flag.String("pivotal-owners", "", "Comma separated list of Pivotal Tracker owner IDs")
@@ -63,6 +66,20 @@ func main() {
 	}
 
 	todos := []todo.Todo{}
+
+	if *githubUsername != "" {
+		ghAssigneeTodos, err := github.FetchGitHubAssigneeTodos(*githubUsername)
+		if err != nil {
+			logger.Fatal(err)
+		}
+		todos = append(todos, ghAssigneeTodos...)
+
+		ghAuthorTodos, err := github.FetchGitHubAuthorTodos(*githubUsername)
+		if err != nil {
+			logger.Fatal(err)
+		}
+		todos = append(todos, ghAuthorTodos...)
+	}
 
 	if len(pivotalProjects) > 0 {
 		pivotalTodos, err := pivotal.FetchPivotalTodos(

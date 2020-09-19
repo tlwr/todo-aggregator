@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/adlio/trello v1.7.0
+	github.com/google/go-github/v32 v32.1.0
 	github.com/jarcoal/httpmock v1.0.6
 	github.com/meatballhat/negroni-logrus v1.1.0
 	github.com/onsi/ginkgo v1.14.1

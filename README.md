@@ -8,7 +8,7 @@ Features:
 
 - [x] Pivotal Tracker source
 - [x] Trello source
+- [x] GitHub assignees source
+- [x] GitHub author source
 - [ ] Jira source
-- [ ] GitHub issues source
-- [ ] GitHub pull requests source
 - [ ] HTTP Basic Authentication
