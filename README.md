@@ -11,4 +11,5 @@ Features:
 - [x] GitHub assignees source
 - [x] GitHub author source
 - [ ] Jira source
+- [ ] Automatic reloading
 - [ ] HTTP Basic Authentication
