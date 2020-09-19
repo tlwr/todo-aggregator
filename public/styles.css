@@ -48,5 +48,11 @@ body{
 a {
   color: var(--dark);
   text-decoration-color: transparent;
-  border-bottom: 1px dotted var(--dark);
+  border-bottom: 1px dotted var(--light);
+}
+
+.todo {
+  border-left: 1px solid var(--dark);
+  margin-left: 5px;
+  padding-left: 5px;
 }
