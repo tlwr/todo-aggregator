@@ -10,6 +10,6 @@ Features:
 - [x] Trello source
 - [x] GitHub assignees source
 - [x] GitHub author source
+- [x] Automatic reloading
 - [ ] Jira source
-- [ ] Automatic reloading
 - [ ] HTTP Basic Authentication
