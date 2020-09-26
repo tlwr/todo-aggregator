@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -65,45 +66,58 @@ func main() {
 		}
 	}
 
-	todos := []todo.Todo{}
+	var currentTodos []todo.Todo
+	var lock sync.RWMutex
 
-	if *githubUsername != "" {
-		ghAssigneeTodos, err := github.FetchGitHubAssigneeTodos(*githubUsername)
-		if err != nil {
-			logger.Fatal(err)
-		}
-		todos = append(todos, ghAssigneeTodos...)
+	go func() {
+		for {
+			todos := []todo.Todo{}
 
-		ghAuthorTodos, err := github.FetchGitHubAuthorTodos(*githubUsername)
-		if err != nil {
-			logger.Fatal(err)
-		}
-		todos = append(todos, ghAuthorTodos...)
-	}
+			if *githubUsername != "" {
+				ghAssigneeTodos, err := github.FetchGitHubAssigneeTodos(*githubUsername)
+				if err != nil {
+					logger.Fatal(err)
+				}
+				todos = append(todos, ghAssigneeTodos...)
 
-	if len(pivotalProjects) > 0 {
-		pivotalTodos, err := pivotal.FetchPivotalTodos(
-			*pivotalKey,
-			pivotalOwners,
-			pivotalProjects,
-		)
-		if err != nil {
-			logger.Fatal(err)
-		}
-		todos = append(todos, pivotalTodos...)
-	}
+				ghAuthorTodos, err := github.FetchGitHubAuthorTodos(*githubUsername)
+				if err != nil {
+					logger.Fatal(err)
+				}
+				todos = append(todos, ghAuthorTodos...)
+			}
 
-	if *trelloKey != "" {
-		trelloTodos, err := trello.FetchTrelloTodos(
-			*trelloKey,
-			*trelloToken,
-			trelloUsernames,
-		)
-		if err != nil {
-			logger.Fatal(err)
+			if len(pivotalProjects) > 0 {
+				pivotalTodos, err := pivotal.FetchPivotalTodos(
+					*pivotalKey,
+					pivotalOwners,
+					pivotalProjects,
+				)
+				if err != nil {
+					logger.Fatal(err)
+				}
+				todos = append(todos, pivotalTodos...)
+			}
+
+			if *trelloKey != "" {
+				trelloTodos, err := trello.FetchTrelloTodos(
+					*trelloKey,
+					*trelloToken,
+					trelloUsernames,
+				)
+				if err != nil {
+					logger.Fatal(err)
+				}
+				todos = append(todos, trelloTodos...)
+			}
+
+			lock.Lock()
+			currentTodos = todos
+			lock.Unlock()
+
+			time.Sleep(1 * time.Minute)
 		}
-		todos = append(todos, trelloTodos...)
-	}
+	}()
 
 	renderer := render.New(render.Options{
 		Directory: "templates",
@@ -118,7 +132,10 @@ func main() {
 	mux.Handle("/metrics", promhttp.Handler())
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		renderer.HTML(w, http.StatusOK, "todos", todos)
+		lock.RLock()
+		defer lock.RUnlock()
+
+		renderer.HTML(w, http.StatusOK, "todos", currentTodos)
 	})
 
 	n := negroni.New()
