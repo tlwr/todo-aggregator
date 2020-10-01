@@ -115,7 +115,7 @@ func main() {
 			currentTodos = todos
 			lock.Unlock()
 
-			time.Sleep(1 * time.Minute)
+			time.Sleep(3 * time.Minute)
 		}
 	}()
 
