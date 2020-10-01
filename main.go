@@ -18,6 +18,7 @@ import (
 
 	nlogrus "github.com/meatballhat/negroni-logrus"
 	"github.com/phyber/negroni-gzip/gzip"
+	prom "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sethvargo/go-signalcontext"
 	"github.com/sirupsen/logrus"
@@ -114,6 +115,24 @@ func main() {
 			lock.Lock()
 			currentTodos = todos
 			lock.Unlock()
+
+			numTodo := float64(0)
+			numDoing := float64(0)
+			numDone := float64(0)
+			for _, todo := range todos {
+				if !todo.Started() && !todo.Finished() {
+					numTodo++
+				}
+				if todo.Started() && !todo.Finished() {
+					numDoing++
+				}
+				if todo.Finished() {
+					numDoing++
+				}
+			}
+			todoCountMetric.With(prom.Labels{"state": "todo"}).Set(numTodo)
+			todoCountMetric.With(prom.Labels{"state": "doing"}).Set(numDoing)
+			todoCountMetric.With(prom.Labels{"state": "done"}).Set(numDone)
 
 			time.Sleep(3 * time.Minute)
 		}
