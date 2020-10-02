@@ -67,8 +67,11 @@ func main() {
 		}
 	}
 
-	var currentTodos []todo.Todo
-	var lock sync.RWMutex
+	var (
+		todoSyncTime = time.Now()
+		currentTodos []todo.Todo
+		lock         sync.RWMutex
+	)
 
 	go func() {
 		for {
@@ -113,6 +116,7 @@ func main() {
 			}
 
 			lock.Lock()
+			todoSyncTime = time.Now()
 			currentTodos = todos
 			lock.Unlock()
 
@@ -154,7 +158,17 @@ func main() {
 		lock.RLock()
 		defer lock.RUnlock()
 
-		renderer.HTML(w, http.StatusOK, "todos", currentTodos)
+		renderer.HTML(
+			w, http.StatusOK,
+			"todos",
+			struct {
+				SecondsAgo int64
+				Todos      []todo.Todo
+			}{
+				SecondsAgo: int64(time.Now().Sub(todoSyncTime).Seconds()),
+				Todos:      currentTodos,
+			},
+		)
 	})
 
 	n := negroni.New()
