@@ -1,6 +1,6 @@
 module github.com/tlwr/todo-aggregator
 
-go 1.14
+go 1.16
 
 require (
 	github.com/adlio/trello v1.8.0
