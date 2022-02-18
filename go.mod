@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/adlio/trello v1.8.0
 	github.com/google/go-github/v32 v32.1.0
-	github.com/jarcoal/httpmock v1.0.8
+	github.com/jarcoal/httpmock v1.1.0
 	github.com/meatballhat/negroni-logrus v1.1.1
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.18.0
@@ -15,7 +15,7 @@ require (
 	github.com/sethvargo/go-signalcontext v0.1.0
 	github.com/sirupsen/logrus v1.7.0
 	github.com/unrolled/render v1.0.3
-	github.com/unrolled/secure v1.0.8
+	github.com/unrolled/secure v1.10.0
 	github.com/urfave/negroni v1.0.0
 	github.com/zbindenren/negroni-prometheus v0.1.1
 )
