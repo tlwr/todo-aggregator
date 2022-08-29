@@ -7,7 +7,7 @@ require (
 	github.com/google/go-github/v32 v32.1.0
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/meatballhat/negroni-logrus v1.1.1
-	github.com/onsi/ginkgo v1.16.4
+	github.com/onsi/ginkgo v1.16.5
 	github.com/onsi/gomega v1.20.1
 	github.com/phyber/negroni-gzip v0.0.0-20180113114010-ef6356a5d029
 	github.com/prometheus/client_golang v1.12.1
